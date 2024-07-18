@@ -10,13 +10,11 @@ fn main() {
         let Some(caps) = re.captures(line) else {
             panic!("no match! in line {line}");
         };
-        let first: &str = &caps.get(1).map_or("0", |m| m.as_str());
-        let second: &str = &caps.get(3).map_or(first, |m| m.as_str());
-        let mut compound: String = String::new();
-        compound.push_str(first);
-        compound.push_str(second);
+        let first: &u32 = &caps.get(1).map_or(0, |m| m.as_str().parse().unwrap());
+        let second: &u32 = &caps.get(3).map_or(*first, |m| m.as_str().parse().unwrap());
+        let compound = first*10 + second;
+
         println!("{first} + {second} = {compound}");
-        let compound: u32 = compound.parse().unwrap();
         sum += compound;
     }
 
