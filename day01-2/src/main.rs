@@ -1,10 +1,8 @@
 use std::collections::HashMap;
 use std::fs::read_to_string;
-// use regex::Regex;
 
 fn main() {
-    // let re = Regex::new(r"^[\D]*(\d)(|.*(\d))\D*$").unwrap();
-    // let mut sum: u32 = 0;
+    let mut sum: u32 = 0;
 
     let mut numbers = HashMap::new();
     numbers.insert("one", 1);
@@ -26,39 +24,49 @@ fn main() {
     numbers.insert("8", 8);
     numbers.insert("9", 9);
 
+    let mut counter = 1;
     for line in read_to_string("calibration_data.txt").unwrap().lines() {
         println!("{line}");
 
-        let mut first = 100;
-        let mut last = -1;
+        let mut first_occurrence: i32 = 100;
+        let mut first_num = 0;
+        let mut last_occurrence: i32 = -1;
+        let mut last_num = 0;
 
         for (key,value) in &numbers {
-            let mut occurences: Vec<(usize, &str)> = line.match_indices(key).collect();
-            occurences.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
-            let first = occurences.first();
+            let mut occurrences: Vec<(usize, &str)> = line.match_indices(key).collect();
+            occurrences.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+            let first = occurrences.first();
             if ! first.is_none() {
-                // first = 
-                // Continue here
-                println!("{first:?}");
+                let first = first.ok_or("error").unwrap();
+                if (first.0 as i32) < first_occurrence {
+                    first_occurrence = (first.0 as i32);
+                    first_num = *value;
+                }
             }
-            let last = occurences.last();
-            println!("{last:?}");
+            let last = occurrences.last();
+            if ! last.is_none() {
+                let last = last.ok_or("error").unwrap();
+                if (last.0 as i32) > last_occurrence {
+                    last_occurrence = (last.0 as i32);
+                    last_num = *value;
+                }
+            }
         }
 
-        // let Some(caps) = re.captures(line) else {
-        //     panic!("no match! in line {line}");
-        // };
-        // let first: &u32 = &caps.get(1).map_or(0, |m| m.as_str().parse().unwrap());
-        // let second: &u32 = &caps.get(3).map_or(*first, |m| m.as_str().parse().unwrap());
-        // let compound = first*10 + second;
+        if first_num == 0 || last_num == 0 {
+            panic!("number can't be 0: {first_num}, {last_num}");
+        }
+        let compound = first_num*10 + last_num;
 
-        // println!("{first} + {second} = {compound}");
-        // sum += compound;
+        println!("{counter}: {first_num} + {last_num} = {compound}");
+        sum += compound;
+        counter += 1;
     }
 
     // https://adventofcode.com/2023/day/1#part2
 
-    // println!("***********************");
-    // println!("Calibration sum: {sum}");
-    // println!("***********************");
+    println!("************************");
+    println!(" Calibration sum: {sum}");
+    println!("************************");
 }
