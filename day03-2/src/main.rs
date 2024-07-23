@@ -38,8 +38,8 @@ impl GearChecker {
                     // 123 123
                     println!("Possible gear at position {gear_position}");
                     let mut parts: Vec<i32> = Vec::new();
-                    for y in -1..1 {
-                        for x in -1..1 {
+                    for y in -1..=1 {
+                        for x in -1..=1 {
                             let character = self.schematic[(line_number as i32 + y) as usize]
                                 .chars()
                                 .nth((gear_position+x) as usize)
@@ -65,9 +65,9 @@ impl GearChecker {
             }
             line_number += 1;
         }
-        println!("************************");
+        println!("*********************************");
         println!("Sum of all gear ratios: {ratio_sum}");
-        println!("************************");
+        println!("*********************************");
     }
 
     fn complete_left(&mut self, mut part_number: String, line_number: i32, position: i32) -> String {
@@ -95,7 +95,7 @@ impl GearChecker {
             if ! character.is_numeric() {
                 return part_number
             }
-            part_number.insert(0, character);
+            part_number.push(character);
             add += 1;
         }
     }
