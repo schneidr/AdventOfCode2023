@@ -1,3 +1,4 @@
+pub mod conversion;
 pub mod map;
 pub mod seed;
 use std::fs::read_to_string;
@@ -18,9 +19,13 @@ fn main() {
                 .collect();
         }
         else if line.trim().ends_with("map:") {
+            if current_map.is_some() {
+                category_maps.push(current_map.unwrap());
+            }
             let map_name: Vec<&str> = line[..line.len()-5].split("-").collect();
             let map = Map::new(map_name[0], map_name[2]);
             current_map = Some(map);
+            println!("{0} -> {1}", map_name[0], map_name[2]);
             // category_maps.push(&map);
         }
         else {
@@ -32,7 +37,8 @@ fn main() {
             let destination_start = numbers[0];
             let source_start = numbers[1];
             let range_length = numbers[2];
-            current_map.unwrap().add_range(destination_start, source_start, range_length);
+            current_map.as_mut().unwrap().add_range(destination_start, source_start, range_length);
         }
     }
+    println!("{category_maps:?}");
 }
