@@ -13,4 +13,13 @@ impl Conversion {
             range_length: range_length
         }
     }
+
+    pub fn convert(self, input: u32) -> Option<u32> {
+        let range = self.source_start..(self.source_start + self.range_length);
+        if range.contains(&input) {
+            let position = input - self.source_start;
+            return Some(self.destination_start + position);
+        }
+        None
+    }
 }
