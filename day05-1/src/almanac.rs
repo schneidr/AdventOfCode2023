@@ -51,5 +51,24 @@ impl Almanac {
                     .add_range(destination_start, source_start, range_length);
             }
         }
+    } 
+
+    fn find_in_map(&self, input: &u32, source: &String) -> Option<Map> {
+        for map in &self.category_maps {
+            if map.source.eq(source) {
+                let (output, destination) = map.transform(input).unwrap();
+                println!("{0}: {1} -> {2}: {3}", source, input, destination, output);
+                self.find_in_map(&output, &destination);
+            }
+        }
+        None
     }
+
+    pub fn find_lowest(&self) {
+        let source = String::from("seed");
+        for seed in &self.seeds {
+            self.find_in_map(&seed.seed_number, &source);
+        }
+    }
+
 }

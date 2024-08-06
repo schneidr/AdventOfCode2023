@@ -1,4 +1,4 @@
-use std::process::Output;
+use std::ops::Deref;
 
 use crate::conversion::Conversion;
 
@@ -22,13 +22,13 @@ impl Map {
         self.transformations.push(Conversion::new(destination_start, source_start, range_length));
     }
 
-    pub fn transform(self, input: u32) -> Option<(u32, String)> {
-        for transformation in self.transformations {
+    pub fn transform(&self, input: &u32) -> Option<(u32, String)> {
+        for transformation in &self.transformations {
             let output = transformation.convert(input);
             if output.is_some() {
-                return Some((output.unwrap(), self.destination))
+                return Some((output.unwrap(), self.destination.clone()))
             }
         }
-        None
+        Some((*input, self.destination.clone()))
     }
 }
