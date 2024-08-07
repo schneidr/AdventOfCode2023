@@ -37,7 +37,7 @@ impl Almanac {
                 current_map = Some(map);
             }
             else {
-                let numbers: Vec<u32> = line
+                let numbers: Vec<u64> = line
                     .trim()
                     .split_whitespace()
                     .map(|num: &str| num.parse().unwrap())
@@ -53,7 +53,7 @@ impl Almanac {
         }
     } 
 
-    fn find_in_map(&self, input: &u32, source: &String) -> Option<Map> {
+    fn find_in_map(&self, input: &u64, source: &String) -> Option<Map> {
         for map in &self.category_maps {
             if map.source.eq(source) {
                 let (output, destination) = map.transform(input).unwrap();

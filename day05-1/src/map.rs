@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use crate::conversion::Conversion;
 
 #[derive(Debug)]
@@ -18,11 +16,11 @@ impl Map {
         }
     }
 
-    pub fn add_range(&mut self, destination_start: u32, source_start: u32, range_length: u32) {
+    pub fn add_range(&mut self, destination_start: u64, source_start: u64, range_length: u64) {
         self.transformations.push(Conversion::new(destination_start, source_start, range_length));
     }
 
-    pub fn transform(&self, input: &u32) -> Option<(u32, String)> {
+    pub fn transform(&self, input: &u64) -> Option<(u64, String)> {
         for transformation in &self.transformations {
             let output = transformation.convert(input);
             if output.is_some() {
