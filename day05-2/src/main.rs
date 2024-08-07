@@ -8,5 +8,5 @@ use crate::almanac::Almanac;
 fn main() {
     let mut almanac = Almanac::new();
     almanac.init(String::from("almanac.txt"));
-    almanac.find_lowest();
+    // almanac.find_lowest();
 }

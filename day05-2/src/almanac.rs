@@ -1,5 +1,8 @@
 use crate::map::Map;
 use std::fs::read_to_string;
+use std::time::Duration;
+use indicatif::ProgressBar;
+use indicatif::ProgressIterator;
 use crate::seed::Seed;
 
 #[derive(Debug)]
@@ -23,10 +26,20 @@ impl Almanac {
                 continue;
             }
             if line[..6].eq("seeds:") {
-                self.seeds = line[7..]
+                let parts: Vec<u64> = line[7..]
                     .split_whitespace()
-                    .map(|id| Seed::new(id.parse().unwrap()))
+                    .map(|id| id.parse().unwrap())
                     .collect();
+                let bar = ProgressBar::new_spinner();
+                bar.set_message("loading seeds");
+                for index in (0..parts.len()).step_by(2) {
+                    for id in parts[index]..(parts[index] + parts[index+1]) {
+                        bar.enable_steady_tick(Duration::from_millis(100));
+                        let seed = Seed::new(id);
+                        self.seeds.push(seed);
+                    }
+                }
+                bar.finish();
             }
             else if line.trim().ends_with("map:") {
                 if current_map.is_some() {
@@ -54,6 +67,8 @@ impl Almanac {
         if current_map.is_some() {
             self.category_maps.push(current_map.unwrap());
         }
+        // println!("{0:?}", self.seeds);
+        println!("Total amount of seeds: {0}", self.seeds.len());
     } 
 
     fn find_in_map(&self, input: &u64, source: &String) -> Option<u64> {
