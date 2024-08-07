@@ -56,12 +56,14 @@ impl Almanac {
         }
     } 
 
-    fn find_in_map(&self, input: &u64, source: &String) -> Option<Map> {
+    fn find_in_map(&self, input: &u64, source: &String) -> Option<u64> {
         for map in &self.category_maps {
             if map.source.eq(source) {
                 let (output, destination) = map.transform(input).unwrap();
-                println!("{0}: {1} -> {2}: {3}", source, input, destination, output);
-                self.find_in_map(&output, &destination);
+                if destination == "location" {
+                    return Some(output)
+                }
+                return self.find_in_map(&output, &destination)
             }
         }
         None
@@ -69,9 +71,20 @@ impl Almanac {
 
     pub fn find_lowest(&self) {
         let source = String::from("seed");
+        let mut nearest_seed: Option<&Seed> = None;
+        let mut nearest_location: u64 = std::u64::MAX;
         for seed in &self.seeds {
-            self.find_in_map(&seed.seed_number, &source);
+            let result = self.find_in_map(&seed.seed_number, &source);
+            if result.is_some() {
+                if result.unwrap() < nearest_location {
+                    nearest_location = result.unwrap();
+                    nearest_seed = Some(seed);
+                }
+            }
         }
+        println!("*************************************");
+        println!("Nearest seed: {0} at {1}", nearest_seed.unwrap().seed_number, nearest_location);
+        println!("*************************************");
     }
 
 }
