@@ -51,6 +51,9 @@ impl Almanac {
                     .add_range(destination_start, source_start, range_length);
             }
         }
+        if current_map.is_some() {
+            self.category_maps.push(current_map.unwrap());
+        }
     } 
 
     fn find_in_map(&self, input: &u64, source: &String) -> Option<Map> {
