@@ -8,9 +8,9 @@ https://adventofcode.com/2023
 
 ### Work in progress
 
-day 5, part 2.
+day 6, part 1.
 
-    |████████------------------------------------------| 16% Complete
+    |█████████-----------------------------------------| 18% Complete
 
 ### Finished
 
@@ -18,8 +18,9 @@ day 5, part 2.
 - day 2
 - day 3
 - day 4, part 1
-- day 5, part 1
+- day 5
 
 ### Postponed
 
 - day 4, part 2
+- day 5, part 2: improve speed by adding multiple threads
