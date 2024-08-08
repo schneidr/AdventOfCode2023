@@ -1,14 +1,13 @@
 use crate::map::Map;
 use std::fs::read_to_string;
-use std::time::Duration;
 use indicatif::ProgressBar;
-use indicatif::ProgressIterator;
+use indicatif::ProgressStyle;
 use crate::seed::Seed;
 
 #[derive(Debug)]
 pub struct Almanac {
     category_maps: Vec<Map>,
-    seeds: Vec<Seed>
+    seeds: Vec<(u64, u64)>
 }
 
 impl Almanac {
@@ -30,16 +29,9 @@ impl Almanac {
                     .split_whitespace()
                     .map(|id| id.parse().unwrap())
                     .collect();
-                let bar = ProgressBar::new_spinner();
-                bar.set_message("loading seeds");
                 for index in (0..parts.len()).step_by(2) {
-                    for id in parts[index]..(parts[index] + parts[index+1]) {
-                        bar.enable_steady_tick(Duration::from_millis(100));
-                        let seed = Seed::new(id);
-                        self.seeds.push(seed);
-                    }
+                    self.seeds.push((parts[index], parts[index+1]));
                 }
-                bar.finish();
             }
             else if line.trim().ends_with("map:") {
                 if current_map.is_some() {
@@ -67,8 +59,6 @@ impl Almanac {
         if current_map.is_some() {
             self.category_maps.push(current_map.unwrap());
         }
-        // println!("{0:?}", self.seeds);
-        println!("Total amount of seeds: {0}", self.seeds.len());
     } 
 
     fn find_in_map(&self, input: &u64, source: &String) -> Option<u64> {
@@ -86,17 +76,30 @@ impl Almanac {
 
     pub fn find_lowest(&self) {
         let source = String::from("seed");
-        let mut nearest_seed: Option<&Seed> = None;
+        let mut nearest_seed: Option<Seed> = None;
         let mut nearest_location: u64 = std::u64::MAX;
-        for seed in &self.seeds {
-            let result = self.find_in_map(&seed.seed_number, &source);
-            if result.is_some() {
-                if result.unwrap() < nearest_location {
-                    nearest_location = result.unwrap();
-                    nearest_seed = Some(seed);
+        let bar = ProgressBar::new(self.seeds.len() as u64)
+            .with_message("Seed block")
+            .with_style(ProgressStyle::with_template("[{eta}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap().progress_chars("##-"));
+        bar.set_position(0);
+        for (seed_start, seed_count) in &self.seeds {
+            let seed_bar = ProgressBar::new(*seed_count)
+                .with_message("Seed")
+                .with_style(ProgressStyle::with_template("[{eta}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap().progress_chars("##-"));
+            for seed_number in *seed_start..(seed_start+seed_count) {
+                let result = self.find_in_map(&seed_number, &source);
+                if result.is_some() {
+                    if result.unwrap() < nearest_location {
+                        nearest_location = result.unwrap();
+                        nearest_seed = Some(Seed::new(seed_number));
+                    }
                 }
+                seed_bar.inc(1);
             }
+            seed_bar.finish();
+            bar.inc(1);
         }
+        bar.finish();
         println!("*************************************");
         println!("Nearest seed: {0} at {1}", nearest_seed.unwrap().seed_number, nearest_location);
         println!("*************************************");
