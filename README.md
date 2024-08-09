@@ -8,9 +8,9 @@ https://adventofcode.com/2023
 
 ### Work in progress
 
-day 6, part 1.
+day 6, part 2.
 
-    |█████████-----------------------------------------| 18% Complete
+    |██████████----------------------------------------| 20% Complete
 
 ### Finished
 
@@ -19,6 +19,7 @@ day 6, part 1.
 - day 3
 - day 4, part 1
 - day 5
+- day 6, part 1
 
 ### Postponed
 
