@@ -1,4 +1,4 @@
-use crate::card::Card;
+use crate::card::{Card, SORT_ORDER};
 use std::cmp::Ordering;
 
 #[derive(Debug)]
@@ -18,14 +18,25 @@ impl Hand {
             Card::new(input.as_bytes()[3] as char),
             Card::new(input.as_bytes()[4] as char)
         ];
-        let cards_copy = [
+        let mut cards_copy = [
             Card::new(input.as_bytes()[0] as char),
             Card::new(input.as_bytes()[1] as char),
             Card::new(input.as_bytes()[2] as char),
             Card::new(input.as_bytes()[3] as char),
             Card::new(input.as_bytes()[4] as char)
         ];
-        let (card_counter, value) = Self::calculate_value(cards_copy);
+        let mut card_counter: Vec<(Card, u8)> = Vec::new();
+        let mut value: u8 = 0;
+        'card_index: for card_index in 0..cards.len() {
+            let mut current_value = 0;
+            if cards.get(card_index).unwrap().value == 'J' {
+                for type_index in (0..SORT_ORDER.len()).rev() {
+                    cards_copy[card_index] = Card::new(SORT_ORDER[type_index]);
+                    // TODO calculate value for each variation
+                }
+            }
+        }
+        (card_counter, value) = Self::calculate_value(cards_copy);
         Hand {
             cards: cards,
             bid: *bid,

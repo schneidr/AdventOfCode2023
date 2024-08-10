@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-const SORT_ORDER: [char; 13] = ['J','2','3','4','5','6','7','8','9','T','Q','K','A'];
+pub const SORT_ORDER: [char; 13] = ['J','2','3','4','5','6','7','8','9','T','Q','K','A'];
 
 #[derive(Debug)]
 pub struct Card {
