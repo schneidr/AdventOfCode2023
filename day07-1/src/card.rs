@@ -1,24 +1,24 @@
 use std::cmp::Ordering;
 
+const SORT_ORDER: [char; 13] = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
+
 #[derive(Debug)]
 pub struct Card {
-    pub value: char,
-    sort_order: [char; 13]
+    pub value: char
 }
 
 impl Card {
-    pub fn new(value: &char) -> Card {
+    pub fn new(value: char) -> Card {
         Card {
-            value: *value,
-            sort_order: ['2','3','4','5','6','7','8','9','T','J','Q','K','A']
+            value: value
         }
     }
 }
 
 impl Ord for Card {
     fn cmp(&self, other: &Self) -> Ordering {
-        let index = self.sort_order.iter().position(|&r| r == self.value);
-        let other_index = self.sort_order.iter().position(|&r| r == other.value);
+        let index = SORT_ORDER.iter().position(|&r| r == self.value);
+        let other_index = SORT_ORDER.iter().position(|&r| r == other.value);
         index.cmp(&other_index)
     }
 }
