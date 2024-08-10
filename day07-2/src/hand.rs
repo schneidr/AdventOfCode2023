@@ -25,6 +25,16 @@ impl Hand {
             Card::new(input.as_bytes()[3] as char),
             Card::new(input.as_bytes()[4] as char)
         ];
+        let (card_counter, value) = Self::calculate_value(cards_copy);
+        Hand {
+            cards: cards,
+            bid: *bid,
+            card_counter: card_counter,
+            value: value
+        }
+    }
+
+    fn calculate_value(cards_copy: [Card; 5]) -> (Vec<(Card, u8)>, u8) {
         let mut card_counter: Vec<(Card, u8)> = Vec::new();
         'card_loop: for card in cards_copy {
             for counter in 0..card_counter.len() {
@@ -36,41 +46,35 @@ impl Hand {
             card_counter.push((card, 1));
         }
         card_counter.sort_by(|a, b| b.1.cmp(&a.1));
-        let mut value: u8 = 0;
         if card_counter.len() == 1 {
             // Five of a kind
-            value = 7;
+            return (card_counter, 7)
         }
-        else if card_counter[0].1 == 4 {
+        if card_counter[0].1 == 4 {
             // Four of a kind
-            value = 6;
+            return (card_counter, 6)
         }
         if card_counter[0].1 == 3 && card_counter[1].1 == 2 {
             // Full house
-            value = 5;
+            return (card_counter, 5)
         }
         if card_counter[0].1 == 3 && card_counter.len() == 3 {
             // Three of a kind
-            value = 4 ;
+            return (card_counter, 4)
         }
         if card_counter[0].1 == 2 && card_counter[1].1 == 2 {
             // Two pair
-            value = 3;
+            return (card_counter, 3)
         }
         if card_counter[0].1 == 2 && card_counter.len() == 4 {
             // One pair
-            value = 2;
+            return (card_counter, 2)
         }
         if card_counter.len() == 5 {
             // High card
-            value = 1;
+            return (card_counter, 1)
         }
-        Hand {
-            cards: cards,
-            bid: *bid,
-            card_counter: card_counter,
-            value: value
-        }
+        (card_counter, 0)
     }
 
 }
