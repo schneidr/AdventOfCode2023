@@ -9,7 +9,9 @@ fn main() {
         let mut parts = line.split_whitespace();
         let cards = parts.next().unwrap();
         let bid: u32 = parts.next().unwrap().parse().unwrap();
-        let hand = Hand::new(cards, &bid);
+        let mut hand = Hand::new(cards, &bid);
+        hand.update_value(0, 1);
+        println!("best value: {0} {1:?}", hand.value, hand.best_cards);
         hands.push(hand);
     }    
     hands.sort();
